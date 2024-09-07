@@ -8,8 +8,6 @@ import com.salim.cascadetype.teacher.domain.Teacher;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,7 @@ public class Course extends BaseEntity {
     @JsonIncludeProperties("id")
     private List<Teacher> teachers = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
+    @JsonIncludeProperties("id")
     private List<Student> students = new ArrayList<>();
 }
