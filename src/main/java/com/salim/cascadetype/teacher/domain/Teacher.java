@@ -1,14 +1,14 @@
 package com.salim.cascadetype.teacher.domain;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.salim.cascadetype.base.BaseEntity;
 import com.salim.cascadetype.course.domain.Course;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.Mergeable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,11 +22,12 @@ public class Teacher extends BaseEntity {
 
     private String email;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.DETACH})
     @JoinTable(
             name = "teacher_course",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<Course> courses;
+    @JsonIncludeProperties("id")
+    private List<Course> courses = new ArrayList<>();
 }

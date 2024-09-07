@@ -3,16 +3,23 @@ package com.salim.cascadetype.bootstraps;
 import com.salim.cascadetype.author.domain.Author;
 import com.salim.cascadetype.course.domain.Course;
 import com.salim.cascadetype.course.repository.CourseRepository;
+import com.salim.cascadetype.teacher.domain.Teacher;
+import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    TeacherRepository teacherRepository;
 
     @Transactional
     @Override
@@ -41,5 +48,14 @@ public class Bootstrap implements CommandLineRunner {
 
         System.out.println("Author ID: " + author.getId());
         courseRepository.save(course1);
+
+        // Teacher
+        Teacher teacher = new Teacher();
+        teacher.setFirstName("Muhammad");
+        teacher.setLastName("Salim");
+        teacher.setEmail("muhammad@gmail.com");
+        teacher.setCourses(List.of(course, course1));
+
+        teacherRepository.save(teacher);
     }
 }

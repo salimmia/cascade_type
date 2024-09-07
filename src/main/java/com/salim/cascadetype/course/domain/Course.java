@@ -23,12 +23,12 @@ public class Course extends BaseEntity {
 
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.JOIN)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     @JsonIncludeProperties("id")
     private Author author;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
+    @JsonIncludeProperties("id")
     private List<Teacher> teachers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "courses")
