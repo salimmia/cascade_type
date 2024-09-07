@@ -1,23 +1,23 @@
 package com.salim.cascadetype.author.domain;
 
 import com.salim.cascadetype.base.BaseEntity;
-import com.salim.cascadetype.course.domain.Course;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 columnNames = "email",
                 name = "unique_author_email"
         )
 })
+@AllArgsConstructor
 public class Author extends BaseEntity {
 
     private Long id;
@@ -27,4 +27,8 @@ public class Author extends BaseEntity {
     private String lastName;
 
     private String email;
+
+    public Author() {
+
+    }
 }
