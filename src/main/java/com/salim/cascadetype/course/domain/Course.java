@@ -6,6 +6,8 @@ import com.salim.cascadetype.base.BaseEntity;
 import com.salim.cascadetype.student.domain.Student;
 import com.salim.cascadetype.teacher.domain.Teacher;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +16,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @Entity
+@AllArgsConstructor
 public class Course extends BaseEntity {
 
     private String courseName;
@@ -32,4 +36,8 @@ public class Course extends BaseEntity {
     @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
     @JsonIncludeProperties("id")
     private List<Student> students = new ArrayList<>();
+
+    public Course() {
+
+    }
 }
