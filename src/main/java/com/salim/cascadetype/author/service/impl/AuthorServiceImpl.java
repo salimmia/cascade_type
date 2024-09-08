@@ -42,8 +42,8 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorResDto updateAuthor(Long id, AuthorReqDto authorReqDto) {
         Author author = authorMapper.toEntity(authorReqDto);
         author.setId(id);
+        Author dbAuthor = authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
 
-        Author dbAuthor = authorRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         if (authorReqDto.firstName() != null && !Objects.equals(authorReqDto.lastName(), dbAuthor.getFirstName())) {
             author.setFirstName(authorReqDto.firstName());
         }

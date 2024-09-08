@@ -58,6 +58,7 @@ public class CourseMapper {
                 .toList();
 
         return CourseResDto.builder()
+                .id(course.getId())
                 .courseName(course.getCourseName())
                 .description(course.getDescription())
                 .authorId(authorId)

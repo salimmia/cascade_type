@@ -9,6 +9,7 @@ import java.util.List;
 
 @Builder
 public record CourseResDto(
+        Long id,
         String courseName,
         String description,
         @JsonProperty("author_id") Long authorId,

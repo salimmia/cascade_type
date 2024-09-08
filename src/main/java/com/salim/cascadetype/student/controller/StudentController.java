@@ -2,6 +2,8 @@ package com.salim.cascadetype.student.controller;
 
 import com.salim.cascadetype.exception.ApiResponse;
 import com.salim.cascadetype.student.domain.Student;
+import com.salim.cascadetype.student.dto.StudentReqDto;
+import com.salim.cascadetype.student.dto.StudentResDto;
 import com.salim.cascadetype.student.service.interfaces.StudentService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,13 @@ public class StudentController {
 
 
     @PostMapping
-    public ResponseEntity<ApiResponse> createStudent(@RequestBody Student student) {
+    public ResponseEntity<ApiResponse> createStudent(@RequestBody StudentReqDto studentReqDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.builder()
                         .success(true)
                         .message("Student created")
-                        .data(studentService.addNewStudent(student))
+                        .data(studentService.addNewStudent(studentReqDto))
                         .build());
     }
 
@@ -38,6 +40,18 @@ public class StudentController {
                         .success(true)
                         .message("All students")
                         .data(studentService.getAllStudents(pageable))
+                        .build());
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ApiResponse> updateStudent(@PathVariable Long id, @RequestBody StudentReqDto studentReqDto) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message("Student updated")
+                        .data(studentService.updateStudent(id, studentReqDto))
                         .build());
     }
 }
