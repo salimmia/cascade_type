@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.salim.cascadetype.base.BaseEntity;
 import com.salim.cascadetype.course.domain.Course;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.Mergeable;
@@ -13,7 +15,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @Entity
+@AllArgsConstructor
 public class Teacher extends BaseEntity {
 
     private String firstName;
@@ -30,4 +34,8 @@ public class Teacher extends BaseEntity {
     )
     @JsonIncludeProperties("id")
     private List<Course> courses = new ArrayList<>();
+
+    public Teacher() {
+
+    }
 }
