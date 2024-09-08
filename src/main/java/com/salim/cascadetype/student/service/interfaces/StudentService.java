@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface StudentService {
     StudentResDto addNewStudent(StudentReqDto studentReqDto);
-    Page<Student> getAllStudents(Pageable pageable);
+    Page<StudentResDto> getAllStudents(Pageable pageable);
     StudentResDto updateStudent(Long id, StudentReqDto studentReqDto);
 }

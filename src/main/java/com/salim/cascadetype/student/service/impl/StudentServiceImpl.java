@@ -8,13 +8,15 @@ import com.salim.cascadetype.student.dto.StudentResDto;
 import com.salim.cascadetype.student.mapper.StudentMapper;
 import com.salim.cascadetype.student.repository.StudentRepository;
 import com.salim.cascadetype.student.service.interfaces.StudentService;
+import com.salim.cascadetype.util.FieldDifferentUtil;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Consumer;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -35,33 +37,33 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Page<Student> getAllStudents(Pageable pageable) {
-        return studentRepository.findAll(pageable);
+    public Page<StudentResDto> getAllStudents(Pageable pageable) {
+        return studentRepository.findAll(pageable)
+                .map(studentMapper::toDto);
     }
 
+    @Transactional
     @Override
     public StudentResDto updateStudent(Long id, StudentReqDto studentReqDto) {
-        Student student = studentMapper.toEntity(studentReqDto);
-        student.setId(id);
-        Student dbStudent = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        Student dbStudent = studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
-        if (studentReqDto.firstName() != null && !Objects.equals(studentReqDto.firstName(), dbStudent.getFirstName())) {
-            student.setFirstName(studentReqDto.firstName());
-        }
-        if (studentReqDto.lastName() != null && !Objects.equals(studentReqDto.lastName(), dbStudent.getLastName())) {
-            student.setLastName(studentReqDto.lastName());
-        }
-        if (studentReqDto.email() != null && !Objects.equals(studentReqDto.email(), dbStudent.getEmail())) {
-            student.setEmail(studentReqDto.email());
-        }
-        if (studentReqDto.dateOfBirth() != null && !Objects.equals(studentReqDto.dateOfBirth(), dbStudent.getDateOfBirth())) {
-            student.setDateOfBirth(studentReqDto.dateOfBirth());
-        }
+        updateIfDifferent(studentReqDto.firstName(), dbStudent.getFirstName(), dbStudent::setFirstName);
+        updateIfDifferent(studentReqDto.lastName(), dbStudent.getLastName(), dbStudent::setLastName);
+        updateIfDifferent(studentReqDto.email(), dbStudent.getEmail(), dbStudent::setEmail);
+        updateIfDifferent(studentReqDto.dateOfBirth(), dbStudent.getDateOfBirth(), dbStudent::setDateOfBirth);
+
         if (studentReqDto.courseIds() != null && !studentReqDto.courseIds().isEmpty()) {
             List<Course> courses = courseRepository.findAllById(studentReqDto.courseIds());
-            student.setCourses(courses);
+            dbStudent.setCourses(courses);
         }
 
-        return studentMapper.toDto(studentRepository.save(student));
+        return studentMapper.toDto(studentRepository.save(dbStudent));
+    }
+
+    private <T> void updateIfDifferent(T newValue, T oldValue, Consumer<T> updater) {
+        if (FieldDifferentUtil.isDifferent(newValue, oldValue)) {
+            updater.accept(newValue);
+        }
     }
 }
