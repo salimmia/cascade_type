@@ -7,8 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseService {
-    Page<Course> getCourses(Pageable pageable);
-    CourseResDto addNewCourse(CourseReqDto courseReqDto);
+    Page<CourseResDto> getCourses(Pageable pageable);
+    Optional<CourseResDto> addNewCourse(CourseReqDto courseReqDto);
 }
