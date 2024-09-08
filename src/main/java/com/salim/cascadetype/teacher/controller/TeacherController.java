@@ -2,6 +2,8 @@ package com.salim.cascadetype.teacher.controller;
 
 import com.salim.cascadetype.exception.ApiResponse;
 import com.salim.cascadetype.teacher.domain.Teacher;
+import com.salim.cascadetype.teacher.dto.TeacherReqDto;
+import com.salim.cascadetype.teacher.dto.TeacherResDto;
 import com.salim.cascadetype.teacher.service.interfaces.TeacherService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,26 +34,26 @@ public class TeacherController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable("id") Long id, @RequestBody Teacher teacher) {
-        Teacher updatedTeacher = teacherService.updateTeacher(id, teacher);
+    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable("id") Long id, @RequestBody TeacherReqDto teacherReqDto) {
+        TeacherResDto updatedTeacherResDto = teacherService.updateTeacher(id, teacherReqDto);
 
         return ResponseEntity
                 .ok()
                 .body(ApiResponse.builder()
                         .success(true)
                         .message("Update teacher")
-                        .data(updatedTeacher)
+                        .data(updatedTeacherResDto)
                         .build());
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> createTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<ApiResponse> createTeacher(@RequestBody TeacherReqDto teacherReqDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.builder()
                         .success(true)
                         .message("Create teacher")
-                        .data(teacherService.createTeacher(teacher))
+                        .data(teacherService.createTeacher(teacherReqDto))
                         .build());
     }
 }
