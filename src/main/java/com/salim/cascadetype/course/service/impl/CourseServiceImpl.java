@@ -6,9 +6,12 @@ import com.salim.cascadetype.course.dto.CourseResDto;
 import com.salim.cascadetype.course.mapper.CourseMapper;
 import com.salim.cascadetype.course.repository.CourseRepository;
 import com.salim.cascadetype.course.service.interfaces.CourseService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -22,13 +25,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<Course> getCourses(Pageable pageable) {
-        return courseRepository.findAll(pageable);
+    public Page<CourseResDto> getCourses(Pageable pageable) {
+
+        return courseRepository.findAll(pageable)
+                .map(courseMapper::toDto);
     }
 
     @Override
-    public CourseResDto addNewCourse(CourseReqDto courseReqDto) {
+    public Optional<CourseResDto> addNewCourse(CourseReqDto courseReqDto) {
         Course course = courseMapper.toEntity(courseReqDto);
-        return courseMapper.toDto(courseRepository.save(course));
+        return Optional.of(courseMapper.toDto(courseRepository.save(course)));
     }
 }
