@@ -1,11 +1,9 @@
 package com.salim.cascadetype.author.controller;
 
-import com.salim.cascadetype.author.domain.Author;
 import com.salim.cascadetype.author.dto.AuthorReqDto;
 import com.salim.cascadetype.author.service.interfaces.AuthorService;
 import com.salim.cascadetype.exception.ApiResponse;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
