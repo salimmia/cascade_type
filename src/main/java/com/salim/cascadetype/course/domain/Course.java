@@ -29,11 +29,11 @@ public class Course extends BaseEntity {
     @JsonIncludeProperties("id")
     private Author author;
 
-    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
+    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
     @JsonIncludeProperties("id")
     private List<Teacher> teachers = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
+    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
     @JsonIncludeProperties("id")
     private List<Student> students = new ArrayList<>();
 

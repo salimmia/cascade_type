@@ -32,38 +32,23 @@ public class CourseMapper {
     }
 
     public Course toEntity(CourseReqDto courseReqDto){
-        Author author = authorRepository.findById(courseReqDto.authorId()).orElse(null);
-        List<Teacher> teachers = teacherRepository.findAllById(courseReqDto.teacherIds());
-        List<Student> students = studentRepository.findAllById(courseReqDto.studentIds());
-
         return Course.builder()
                 .courseName(courseReqDto.courseName())
                 .description(courseReqDto.description())
-                .author(author)
-                .teachers(teachers)
-                .students(students)
+                .author(authorRepository.findById(courseReqDto.authorId()).orElse(null))
+                .teachers(teacherRepository.findAllById(courseReqDto.teacherIds()))
+                .students(studentRepository.findAllById(courseReqDto.studentIds()))
                 .build();
     }
 
     public CourseResDto toDto(Course course){
-
-        Long authorId = course.getId() != null ? course.getAuthor().getId() : null;
-        List<Long> teacherIds = course.getTeachers().stream()
-                .map(BaseEntity::getId)
-                .sorted()
-                .toList();
-        List<Long> studentIds = course.getStudents().stream()
-                .map(BaseEntity::getId)
-                .sorted()
-                .toList();
-
         return CourseResDto.builder()
                 .id(course.getId())
                 .courseName(course.getCourseName())
                 .description(course.getDescription())
-                .authorId(authorId)
-                .teacherIds(teacherIds)
-                .studentIds(studentIds)
+                .authorId(course.getId() != null ? course.getAuthor().getId() : null)
+                .teacherIds(course.getTeachers().stream().map(BaseEntity::getId).toList())
+                .studentIds(course.getStudents().stream().map(BaseEntity::getId).toList())
                 .build();
     }
 }

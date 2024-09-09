@@ -29,6 +29,17 @@ public class CourseController {
                         .build());
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResponse> getCourseById(@PathVariable Long id) {
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message("Found course with id " + id)
+                        .data(courseService.getCourse(id))
+                        .build());
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> addNewCourse(@RequestBody CourseReqDto courseDtoReq) {
         return ResponseEntity
@@ -37,6 +48,29 @@ public class CourseController {
                         .success(true)
                         .message("New course")
                         .data(courseService.addNewCourse(courseDtoReq))
+                        .build());
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ApiResponse> updateCourse(@PathVariable Long id, @RequestBody CourseReqDto courseDtoReq) {
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message("Updating course")
+                        .data(courseService.updateCourse(id, courseDtoReq))
+                        .build());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponse> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message("Deleting course")
+                        .data(null)
                         .build());
     }
 }
