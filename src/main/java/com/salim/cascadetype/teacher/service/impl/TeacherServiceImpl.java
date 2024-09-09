@@ -1,6 +1,5 @@
 package com.salim.cascadetype.teacher.service.impl;
 
-import com.salim.cascadetype.base.BaseEntity;
 import com.salim.cascadetype.course.domain.Course;
 import com.salim.cascadetype.course.repository.CourseRepository;
 import com.salim.cascadetype.teacher.domain.Teacher;
@@ -9,14 +8,14 @@ import com.salim.cascadetype.teacher.dto.TeacherResDto;
 import com.salim.cascadetype.teacher.mapper.TeacherMapper;
 import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import com.salim.cascadetype.teacher.service.interfaces.TeacherService;
+import com.salim.cascadetype.util.FieldDifferentUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.function.Consumer;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -32,8 +31,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Page<Teacher> getTeachers(Pageable pageable) {
-        return teacherRepository.findAll(pageable);
+    public Page<TeacherResDto> getTeachers(Pageable pageable) {
+        return teacherRepository.findAll(pageable).map(teacherMapper::toDto);
     }
 
     @Override
@@ -46,20 +45,10 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherResDto updateTeacher(Long id, TeacherReqDto teacherReqDto) {
         Teacher dbTeacher = teacherRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        List<Long> courseIds = dbTeacher.getCourses().stream()
-                .map(BaseEntity::getId)
-                .toList();
-
-        if(!teacherReqDto.firstName().isEmpty() && !Objects.equals(dbTeacher.getFirstName(), teacherReqDto.firstName())) {
-            dbTeacher.setFirstName(teacherReqDto.firstName());
-        }
-        if (!teacherReqDto.lastName().isEmpty() && !Objects.equals(dbTeacher.getLastName(), teacherReqDto.lastName())) {
-            dbTeacher.setLastName(teacherReqDto.lastName());
-        }
-        if (!teacherReqDto.email().isEmpty() && !Objects.equals(dbTeacher.getEmail(), teacherReqDto.email())) {
-            dbTeacher.setEmail(teacherReqDto.email());
-        }
-        if (!teacherReqDto.courseIds().isEmpty() && !Objects.equals(courseIds, teacherReqDto.courseIds())) {
+        updateIfDifferent(teacherReqDto.firstName(), dbTeacher.getFirstName(), dbTeacher::setFirstName);
+        updateIfDifferent(teacherReqDto.lastName(), dbTeacher.getLastName(), dbTeacher::setLastName);
+        updateIfDifferent(teacherReqDto.email(), dbTeacher.getEmail(), dbTeacher::setEmail);
+        if (!teacherReqDto.courseIds().isEmpty()) {
             List<Course> courses = courseRepository.findAllById(teacherReqDto.courseIds());
             dbTeacher.setCourses(courses);
         }
@@ -70,5 +59,11 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public TeacherResDto createTeacher(TeacherReqDto teacherReqDto) {
         return teacherMapper.toDto(teacherRepository.save(teacherMapper.toEntity(teacherReqDto)));
+    }
+
+    private <T> void updateIfDifferent(T newValue, T oldValue, Consumer<T> updater){
+        if (FieldDifferentUtil.isDifferent(newValue, oldValue)){
+            updater.accept(newValue);
+        }
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface TeacherService {
-    Page<Teacher> getTeachers(Pageable pageable);
+    Page<TeacherResDto> getTeachers(Pageable pageable);
     TeacherResDto getTeacher(Long id);
     TeacherResDto updateTeacher(Long id, TeacherReqDto teacherReqDto);
     TeacherResDto createTeacher(TeacherReqDto teacherReqDto);
