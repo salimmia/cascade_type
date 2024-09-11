@@ -15,7 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Service
@@ -33,6 +34,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResDto addNewStudent(StudentReqDto studentReqDto) {
+        Set<Course> courses = new HashSet<>(courseRepository.findAllById(studentReqDto.courseIds()));
+        if (courses.size() != studentReqDto.courseIds().size()) {
+            throw new EntityNotFoundException("Some courses not found");
+        }
         return studentMapper.toDto(studentRepository.save(studentMapper.toEntity(studentReqDto)));
     }
 
@@ -54,11 +59,27 @@ public class StudentServiceImpl implements StudentService {
         updateIfDifferent(studentReqDto.dateOfBirth(), dbStudent.getDateOfBirth(), dbStudent::setDateOfBirth);
 
         if (studentReqDto.courseIds() != null && !studentReqDto.courseIds().isEmpty()) {
-            List<Course> courses = courseRepository.findAllById(studentReqDto.courseIds());
+            Set<Course> courses = new HashSet<>(courseRepository.findAllById(studentReqDto.courseIds()));
             dbStudent.setCourses(courses);
         }
 
         return studentMapper.toDto(studentRepository.save(dbStudent));
+    }
+
+    @Override
+    public StudentResDto getStudent(Long id) {
+        return studentMapper.toDto(studentRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Student not found " + id)));
+    }
+
+    @Transactional
+    @Override
+    public void deleteStudent(Long id) {
+        Student dbStudent = studentRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("Student not found " + id));
+        new HashSet<>(dbStudent.getCourses()).forEach(dbStudent::removeCourse);
+
+        studentRepository.delete(dbStudent);
     }
 
     private <T> void updateIfDifferent(T newValue, T oldValue, Consumer<T> updater) {

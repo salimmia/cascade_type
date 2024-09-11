@@ -10,7 +10,10 @@ import com.salim.cascadetype.student.dto.StudentReqDto;
 import com.salim.cascadetype.student.dto.StudentResDto;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class StudentMapper {
@@ -22,30 +25,25 @@ public class StudentMapper {
     }
 
     public Student toEntity(StudentReqDto studentReqDto){
-        List<Course> courses = courseRepository.findAllById(studentReqDto.courseIds());
-
         return Student.builder()
                 .firstName(studentReqDto.firstName())
                 .lastName(studentReqDto.lastName())
                 .email(studentReqDto.email())
                 .dateOfBirth(studentReqDto.dateOfBirth())
-                .courses(courses)
+                .courses(new HashSet<>(courseRepository.findAllById(studentReqDto.courseIds())))
                 .build();
     }
 
     public StudentResDto toDto(Student student){
-
-        List<Long> courseIds = student.getCourses().stream()
-                .map(BaseEntity::getId)
-                .toList();
-
         return StudentResDto.builder()
                 .id(student.getId())
                 .firstName(student.getFirstName())
                 .lastName(student.getLastName())
                 .email(student.getEmail())
                 .dateOfBirth(student.getDateOfBirth())
-                .courseIds(courseIds)
+                .courseIds(student.getCourses().stream()
+                        .map(BaseEntity::getId)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }

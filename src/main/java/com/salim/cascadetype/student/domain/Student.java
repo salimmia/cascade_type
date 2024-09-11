@@ -12,7 +12,9 @@ import lombok.Setter;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,9 +38,16 @@ public class Student extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     @JsonIncludeProperties("id")
-    private List<Course> courses = new ArrayList<>();
+    private Set<Course> courses = new HashSet<>();
 
-    public Student() {
+    public Student() {}
 
+    public void addCourse(Course course) {
+        courses.add(course);
+        course.getStudents().add(this);
+    }
+    public void removeCourse(Course course) {
+        courses.remove(course);
+        course.getStudents().remove(this);
     }
 }

@@ -1,15 +1,13 @@
 package com.salim.cascadetype.student.dto;
 
-import com.salim.cascadetype.course.dto.CourseReqDto;
-
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 public record StudentReqDto(
         String firstName,
         String lastName,
         String email,
         Instant dateOfBirth,
-        List<Long> courseIds
+        Set<Long> courseIds
 ) {
 }

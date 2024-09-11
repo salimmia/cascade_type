@@ -20,7 +20,6 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-
     @PostMapping
     public ResponseEntity<ApiResponse> createStudent(@RequestBody StudentReqDto studentReqDto) {
         return ResponseEntity
@@ -43,6 +42,17 @@ public class StudentController {
                         .build());
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResponse> getStudent(@PathVariable Long id) {
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message("Get Student by id " + id)
+                        .data(studentService.getStudent(id))
+                        .build());
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> updateStudent(@PathVariable Long id, @RequestBody StudentReqDto studentReqDto) {
 
@@ -52,6 +62,18 @@ public class StudentController {
                         .success(true)
                         .message("Student updated")
                         .data(studentService.updateStudent(id, studentReqDto))
+                        .build());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponse> deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.builder()
+                        .success(true)
+                        .message("Student deleted of id: " + id)
+                        .data(null)
                         .build());
     }
 }

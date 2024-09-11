@@ -10,4 +10,6 @@ public interface StudentService {
     StudentResDto addNewStudent(StudentReqDto studentReqDto);
     Page<StudentResDto> getAllStudents(Pageable pageable);
     StudentResDto updateStudent(Long id, StudentReqDto studentReqDto);
+    StudentResDto getStudent(Long id);
+    void deleteStudent(Long id);
 }

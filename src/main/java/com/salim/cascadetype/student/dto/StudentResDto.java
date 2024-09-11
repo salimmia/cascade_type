@@ -1,10 +1,9 @@
 package com.salim.cascadetype.student.dto;
 
-import com.salim.cascadetype.course.dto.CourseResDto;
 import lombok.Builder;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 @Builder
 public record StudentResDto (
@@ -13,6 +12,6 @@ public record StudentResDto (
         String lastName,
         String email,
         Instant dateOfBirth,
-        List<Long> courseIds
+        Set<Long> courseIds
 ){
 }
