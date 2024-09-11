@@ -57,7 +57,7 @@ public class CourseController {
                 .ok()
                 .body(ApiResponse.builder()
                         .success(true)
-                        .message("Updating course")
+                        .message("Updating course of id " + id)
                         .data(courseService.updateCourse(id, courseDtoReq))
                         .build());
     }
@@ -69,7 +69,7 @@ public class CourseController {
                 .ok()
                 .body(ApiResponse.builder()
                         .success(true)
-                        .message("Deleting course")
+                        .message("Deleting course of id " + id)
                         .data(null)
                         .build());
     }

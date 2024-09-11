@@ -14,12 +14,15 @@ import com.salim.cascadetype.teacher.domain.Teacher;
 import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import com.salim.cascadetype.util.FieldDifferentUtil;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -69,14 +72,14 @@ public class CourseServiceImpl implements CourseService {
             dbCourse.setAuthor(author);
         }
         if (courseReqDto.teacherIds() != null) {
-            List<Teacher> teachers = teacherRepository.findAllById(courseReqDto.teacherIds());
+            Set<Teacher> teachers = new HashSet<>(teacherRepository.findAllById(courseReqDto.teacherIds()));
             if (teachers.size() != courseReqDto.teacherIds().size()) {
                 throw new EntityNotFoundException("Some teachers not found");
             }
             dbCourse.setTeachers(teachers);
         }
         if (courseReqDto.studentIds() != null) {
-            List<Student> students = studentRepository.findAllById(courseReqDto.studentIds());
+            Set<Student> students = new HashSet<>(studentRepository.findAllById(courseReqDto.studentIds()));
             if (students.size() != courseReqDto.studentIds().size()){
                 throw new EntityNotFoundException("Some students not found");
             }
@@ -87,9 +90,14 @@ public class CourseServiceImpl implements CourseService {
         return Optional.of(courseMapper.toDto(updateCourse));
     }
 
+    @Transactional
     @Override
     public void deleteCourse(Long id) {
-        courseRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Course course = courseRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        course.getTeachers().forEach(course::removeTeacher);
+        course.getStudents().forEach(course::removeStudent);
+
         courseRepository.deleteById(id);
     }
 }

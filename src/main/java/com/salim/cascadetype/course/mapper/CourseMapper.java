@@ -12,6 +12,7 @@ import com.salim.cascadetype.teacher.domain.Teacher;
 import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -36,8 +37,8 @@ public class CourseMapper {
                 .courseName(courseReqDto.courseName())
                 .description(courseReqDto.description())
                 .author(authorRepository.findById(courseReqDto.authorId()).orElse(null))
-                .teachers(teacherRepository.findAllById(courseReqDto.teacherIds()))
-                .students(studentRepository.findAllById(courseReqDto.studentIds()))
+                .teachers(new HashSet<>(teacherRepository.findAllById(courseReqDto.teacherIds())))
+                .students(new HashSet<>(studentRepository.findAllById(courseReqDto.studentIds())))
                 .build();
     }
 

@@ -11,8 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,15 +29,32 @@ public class Course extends BaseEntity {
     @JsonIncludeProperties("id")
     private Author author;
 
-    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
+    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
     @JsonIncludeProperties("id")
-    private List<Teacher> teachers = new ArrayList<>();
+    private Set<Teacher> teachers = new HashSet<>();
 
-    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
+    @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH})
     @JsonIncludeProperties("id")
-    private List<Student> students = new ArrayList<>();
+    private Set<Student> students = new HashSet<>();
 
     public Course() {
 
+    }
+
+    public void addTeacher(Teacher teacher) {
+        teachers.add(teacher);
+        teacher.getCourses().add(this);
+    }
+    public void removeTeacher(Teacher teacher) {
+        teachers.remove(teacher);
+        teacher.getCourses().remove(this);
+    }
+    public void addStudent(Student student) {
+        students.add(student);
+        student.getCourses().add(this);
+    }
+    public void removeStudent(Student student) {
+        students.remove(student);
+        student.getCourses().remove(this);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -54,7 +55,7 @@ public class Bootstrap implements CommandLineRunner {
         teacher.setFirstName("Muhammad");
         teacher.setLastName("Salim");
         teacher.setEmail("muhammad@gmail.com");
-        teacher.setCourses(List.of(course, course1));
+        teacher.setCourses(Set.of(course, course1));
 
         teacherRepository.save(teacher);
     }

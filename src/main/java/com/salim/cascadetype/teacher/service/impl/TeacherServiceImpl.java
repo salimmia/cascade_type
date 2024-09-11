@@ -14,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Service
@@ -49,7 +51,7 @@ public class TeacherServiceImpl implements TeacherService {
         updateIfDifferent(teacherReqDto.lastName(), dbTeacher.getLastName(), dbTeacher::setLastName);
         updateIfDifferent(teacherReqDto.email(), dbTeacher.getEmail(), dbTeacher::setEmail);
         if (!teacherReqDto.courseIds().isEmpty()) {
-            List<Course> courses = courseRepository.findAllById(teacherReqDto.courseIds());
+            Set<Course> courses = new HashSet<>(courseRepository.findAllById(teacherReqDto.courseIds()));
             dbTeacher.setCourses(courses);
         }
 
