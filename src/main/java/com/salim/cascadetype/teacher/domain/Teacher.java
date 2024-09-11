@@ -36,4 +36,13 @@ public class Teacher extends BaseEntity {
     private Set<Course> courses = new HashSet<>();
 
     public Teacher() {}
+
+    public void addCourse(Course course) {
+        courses.add(course);
+        course.getTeachers().add(this);
+    }
+    public void removeCourse(Course course) {
+        courses.remove(course);
+        course.getTeachers().remove(this);
+    }
 }

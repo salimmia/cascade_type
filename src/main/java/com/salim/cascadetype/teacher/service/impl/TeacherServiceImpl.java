@@ -63,6 +63,14 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherMapper.toDto(teacherRepository.save(teacherMapper.toEntity(teacherReqDto)));
     }
 
+    @Override
+    public void deleteTeacher(Long id) {
+        Teacher dbTeacher = teacherRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("Teacher with id " + id + " not found"));
+        new HashSet<>(dbTeacher.getCourses()).forEach(dbTeacher::removeCourse);
+        teacherRepository.delete(dbTeacher);
+    }
+
     private <T> void updateIfDifferent(T newValue, T oldValue, Consumer<T> updater){
         if (FieldDifferentUtil.isDifferent(newValue, oldValue)){
             updater.accept(newValue);
