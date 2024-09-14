@@ -1,4 +1,4 @@
-package com.salim.cascadetype.extraModule;
+package com.salim.cascadetype.mainTask;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Entity
 @Inheritance
 @DiscriminatorColumn(name = "type")
-public abstract class NeededType {
+public abstract class AllowedType {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private Long id;
 }

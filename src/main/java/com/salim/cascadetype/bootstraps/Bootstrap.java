@@ -3,12 +3,16 @@ package com.salim.cascadetype.bootstraps;
 import com.salim.cascadetype.author.domain.Author;
 import com.salim.cascadetype.course.domain.Course;
 import com.salim.cascadetype.course.repository.CourseRepository;
-import com.salim.cascadetype.extraModule.IntegerWrapper;
-import com.salim.cascadetype.extraModule.Person;
-import com.salim.cascadetype.extraModule.StringWrapper;
-import com.salim.cascadetype.extraModule.repositories.IntegerWrapperRepository;
-import com.salim.cascadetype.extraModule.repositories.PersonRepository;
-import com.salim.cascadetype.extraModule.repositories.StringWrapperRepository;
+//import com.salim.cascadetype.extraModule.IntegerWrapper;
+//import com.salim.cascadetype.extraModule.Person;
+//import com.salim.cascadetype.extraModule.StringWrapper;
+//import com.salim.cascadetype.extraModule.repositories.IntegerWrapperRepository;
+//import com.salim.cascadetype.extraModule.repositories.PersonRepository;
+//import com.salim.cascadetype.extraModule.repositories.StringWrapperRepository;
+import com.salim.cascadetype.mainTask.DataService;
+import com.salim.cascadetype.mainTask.Manager;
+import com.salim.cascadetype.mainTask.Person;
+import com.salim.cascadetype.mainTask.StringWrapper;
 import com.salim.cascadetype.teacher.domain.Teacher;
 import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
@@ -29,21 +33,18 @@ public class Bootstrap implements CommandLineRunner {
     TeacherRepository teacherRepository;
 
     @Autowired
-    private PersonRepository personRepository;
+    private DataService dataService;
 
     @Autowired
-    private IntegerWrapperRepository integerWrapperRepository;
-
-    @Autowired
-    private StringWrapperRepository stringWrapperRepository;
+    private Manager<Object> manager;
 
     @Transactional
     @Override
     public void run(String... args) throws Exception {
         Author author = new Author();
-        author.setFirstName("John");
-        author.setLastName("Smith");
-        author.setEmail("john.smith@gmail.com");
+        author.setFirstName("Muhammad");
+        author.setLastName("Salim");
+        author.setEmail("muhammad.salim@gmail.com");
 
         Course course = new Course();
         course.setCourseName("Spring Boot");
@@ -51,16 +52,10 @@ public class Bootstrap implements CommandLineRunner {
         course.setAuthor(author);
         courseRepository.save(course);
 
-//        Author author2 = new Author();
-//        author2.setFirstName("Jane");
-//        author2.setLastName("Smith");
-//        author2.setEmail("jane.smith@gmail.com");
-
         Course course1 = new Course();
         course1.setCourseName("Spring");
         course1.setDescription("Spring course");
         course1.setAuthor(author);
-//        course1.setAuthor(author2);
 
         System.out.println("Author ID: " + author.getId());
         courseRepository.save(course1);
@@ -74,25 +69,26 @@ public class Bootstrap implements CommandLineRunner {
 
         teacherRepository.save(teacher);
 
-        testInheritence();
+        testInheritance();
     }
 
-    private void testInheritence(){
-        // Create and save a person
-        Person person = new Person("John Doe", 30);
-        personRepository.save(person);
+    private void testInheritance(){
+        dataService.saveString("Hello, World!");
+        StringWrapper stringEntity = new StringWrapper("Hello, World!");
+        manager.add(stringEntity);
 
-        // Create and save an integer wrapper
-        IntegerWrapper intWrapper = new IntegerWrapper(100);
-        integerWrapperRepository.save(intWrapper);
+        Person person = new Person("Muhammad Salim", 26);
+        dataService.savePerson(person);
+        manager.add(person);
 
-        // Create and save a string wrapper
-        StringWrapper stringWrapper = new StringWrapper("Hello");
-        stringWrapperRepository.save(stringWrapper);
+        Person person1 = new Person("Muhammad Salim", 25);
+        Person person2 = new Person("Muhammad Halim", 35);
+        dataService.saveGroup("Brothers", Set.of(person1, person2));
+        manager.addList(List.of(person1, person2));
 
-        // Fetch and print all records
-        System.out.println(personRepository.findAll());
-        System.out.println(integerWrapperRepository.findAll());
-        System.out.println(stringWrapperRepository.findAll());
+        manager.printContents();
+        System.out.println("Groups: " + dataService.getAllGroups());
+        System.out.println("All Person: " + dataService.getAllPersons());
+        System.out.println("Strings: " + dataService.getAllStrings());
     }
 }
