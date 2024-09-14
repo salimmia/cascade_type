@@ -8,19 +8,15 @@ import java.util.List;
 
 @Component
 @Getter
-public class Manager<T> {
+public class Manager<T extends AllowedType> {
 
     private final List<Object> array = new ArrayList<>();
 
-    public <V extends AllowedType>void add(V obj) {
+    public void add(T obj) {
         array.add(obj);
     }
 
-//    public void add(T person) {
-//        array.add(person);
-//    }
-
-    public <V extends AllowedType> void addList(List<V> list) {
+    public void addList(List<? extends AllowedType> list) {
         array.addAll(list);
     }
 
