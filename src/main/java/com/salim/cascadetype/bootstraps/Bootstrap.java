@@ -3,6 +3,12 @@ package com.salim.cascadetype.bootstraps;
 import com.salim.cascadetype.author.domain.Author;
 import com.salim.cascadetype.course.domain.Course;
 import com.salim.cascadetype.course.repository.CourseRepository;
+import com.salim.cascadetype.extraModule.IntegerWrapper;
+import com.salim.cascadetype.extraModule.Person;
+import com.salim.cascadetype.extraModule.StringWrapper;
+import com.salim.cascadetype.extraModule.repositories.IntegerWrapperRepository;
+import com.salim.cascadetype.extraModule.repositories.PersonRepository;
+import com.salim.cascadetype.extraModule.repositories.StringWrapperRepository;
 import com.salim.cascadetype.teacher.domain.Teacher;
 import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +27,15 @@ public class Bootstrap implements CommandLineRunner {
 
     @Autowired
     TeacherRepository teacherRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
+    private IntegerWrapperRepository integerWrapperRepository;
+
+    @Autowired
+    private StringWrapperRepository stringWrapperRepository;
 
     @Transactional
     @Override
@@ -58,5 +73,26 @@ public class Bootstrap implements CommandLineRunner {
         teacher.setCourses(Set.of(course, course1));
 
         teacherRepository.save(teacher);
+
+        testInheritence();
+    }
+
+    private void testInheritence(){
+        // Create and save a person
+        Person person = new Person("John Doe", 30);
+        personRepository.save(person);
+
+        // Create and save an integer wrapper
+        IntegerWrapper intWrapper = new IntegerWrapper(100);
+        integerWrapperRepository.save(intWrapper);
+
+        // Create and save a string wrapper
+        StringWrapper stringWrapper = new StringWrapper("Hello");
+        stringWrapperRepository.save(stringWrapper);
+
+        // Fetch and print all records
+        System.out.println(personRepository.findAll());
+        System.out.println(integerWrapperRepository.findAll());
+        System.out.println(stringWrapperRepository.findAll());
     }
 }

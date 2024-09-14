@@ -1,4 +1,4 @@
-package com.salim.cascadetype;
+package com.salim.cascadetype.extraModule;
 
 import java.util.ArrayList;
 import java.util.List;
