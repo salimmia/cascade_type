@@ -60,7 +60,6 @@ public class Bootstrap implements CommandLineRunner {
         System.out.println("Author ID: " + author.getId());
         courseRepository.save(course1);
 
-        // Teacher
         Teacher teacher = new Teacher();
         teacher.setFirstName("Muhammad");
         teacher.setLastName("Salim");
