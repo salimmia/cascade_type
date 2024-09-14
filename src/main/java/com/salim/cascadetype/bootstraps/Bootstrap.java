@@ -9,10 +9,7 @@ import com.salim.cascadetype.course.repository.CourseRepository;
 //import com.salim.cascadetype.extraModule.repositories.IntegerWrapperRepository;
 //import com.salim.cascadetype.extraModule.repositories.PersonRepository;
 //import com.salim.cascadetype.extraModule.repositories.StringWrapperRepository;
-import com.salim.cascadetype.mainTask.DataService;
-import com.salim.cascadetype.mainTask.Manager;
-import com.salim.cascadetype.mainTask.Person;
-import com.salim.cascadetype.mainTask.StringWrapper;
+import com.salim.cascadetype.mainTask.*;
 import com.salim.cascadetype.teacher.domain.Teacher;
 import com.salim.cascadetype.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
@@ -36,7 +33,7 @@ public class Bootstrap implements CommandLineRunner {
     private DataService dataService;
 
     @Autowired
-    private Manager<Object> manager;
+    private Manager<AllowedType> manager;
 
     @Transactional
     @Override
